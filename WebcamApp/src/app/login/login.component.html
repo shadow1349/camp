@@ -1,0 +1,18 @@
+<mat-card>
+  <divclass="md-padding">
+      <form layout="column"  [formGroup]="LoginForm" (submit)="Login()">
+        <mat-form-field appearance="outline" flex>
+            <mat-label>Email</mat-label>
+            <input type="email" formControlName="Email" placeholder="Enter your email address" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline" flex>
+            <mat-label>Password</mat-label>
+            <input type="password" formControlName="Password" placeholder="Enter your password" required>
+        </mat-form-field>
+
+        <button mat-raised-button color="accent">
+            Login
+        </button>
+      </form>
+  </div>
+</mat-card>
