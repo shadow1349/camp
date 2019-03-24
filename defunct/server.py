@@ -34,7 +34,6 @@ class IndexHandler(tornado.web.RequestHandler):
         else:
             self.render("index.html", port=args.port)
 
-
 class LoginHandler(tornado.web.RequestHandler):
 
     def get(self):
@@ -49,11 +48,9 @@ class LoginHandler(tornado.web.RequestHandler):
             time.sleep(1)
             self.redirect(u"/login?error")
 
-
 class ErrorHandler(tornado.web.RequestHandler):
     def get(self):
         self.send_error(status_code=403)
-
 
 class WebSocket(tornado.websocket.WebSocketHandler):
 
@@ -62,7 +59,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
         # Start an infinite loop when this is called
         if message == "read_camera":
-            if not args.require_login or self.get_secure_cookie(COOKIE_NAME):
+            if not self.get_secure_cookie(COOKIE_NAME):
                 self.camera_loop = PeriodicCallback(self.loop, 10)
                 self.camera_loop.start()
             else:
@@ -88,47 +85,21 @@ class WebSocket(tornado.websocket.WebSocketHandler):
         except tornado.websocket.WebSocketClosedError:
             self.camera_loop.stop()
 
+import cv2
+from PIL import Image
+camera = cv2.VideoCapture(0)
 
-parser = argparse.ArgumentParser(description="Starts a webserver that "
-                                 "connects to a webcam.")
-parser.add_argument("--port", type=int, default=8000, help="The "
-                    "port on which to serve the website.")
-parser.add_argument("--resolution", type=str, default="low", help="The "
-                    "video resolution. Can be high, medium, or low.")
-parser.add_argument("--require-login", action="store_true", help="Require "
-                    "a password to log in to webserver.")
-parser.add_argument("--use-usb", action="store_true", help="Use a USB "
-                    "webcam instead of the standard Pi camera.")
-parser.add_argument("--usb-id", type=int, default=0, help="The "
-                     "usb camera number to display")
-args = parser.parse_args()
+w,h = 1280, 720
 
-if args.use_usb:
-    import cv2
-    from PIL import Image
-    camera = cv2.VideoCapture(args.usb_id)
-else:
-    import picamera
-    camera = picamera.PiCamera()
-    camera.start_preview()
-
-resolutions = {"high": (1280, 720), "medium": (640, 480), "low": (320, 240)}
-if args.resolution in resolutions:
-    if args.use_usb:
-        w, h = resolutions[args.resolution]
-        camera.set(3, w)
-        camera.set(4, h)
-    else:
-        camera.resolution = resolutions[args.resolution]
-else:
-    raise Exception("%s not in resolution options." % args.resolution)
+camera.set(3, w)
+camera.set(4, h)
 
 handlers = [(r"/", IndexHandler), (r"/login", LoginHandler),
             (r"/websocket", WebSocket),
             (r"/static/password.txt", ErrorHandler),
             (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': ROOT})]
 application = tornado.web.Application(handlers, cookie_secret=PASSWORD)
-application.listen(args.port)
+application.listen(8000)
 
 webbrowser.open("http://localhost:%d/" % args.port, new=2)
 
