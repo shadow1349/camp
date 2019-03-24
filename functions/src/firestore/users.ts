@@ -36,8 +36,7 @@ export const OnUserUpdated = functions.firestore
     if (
       before.Permissions.admin !== after.Permissions.admin ||
       before.Permissions.authorized !== after.Permissions.authorized ||
-      before.Permissions.user ||
-      after.Permissions.user
+      before.Permissions.user !== after.Permissions.user
     ) {
       return admin.auth().setCustomUserClaims(context.params.UserId, after.Permissions);
     }

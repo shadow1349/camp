@@ -1,5 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { environment } from 'src/environments/environment.prod';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,25 +6,7 @@ import { environment } from 'src/environments/environment.prod';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  socket: WebSocket;
-
-  @ViewChild('video') Video: ElementRef;
-
-  constructor() {
-    this.socket = new WebSocket(`ws://${window.location.hostname}:${environment.port}`);
-    this.socket.onopen = () => {
-      console.log('CONNECTED');
-      this.ReadCamera();
-    };
-
-    this.socket.onmessage = ev => {
-      this.Video.nativeElement.src = `data:img/jped:base64,${ev.data}`;
-    };
-  }
+  constructor() {}
 
   ngOnInit() {}
-
-  private ReadCamera() {
-    this.socket.send('read_camera');
-  }
 }

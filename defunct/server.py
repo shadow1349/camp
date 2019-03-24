@@ -56,7 +56,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         """Evaluates the function pointed to by json-rpc."""
-
+    
         # Start an infinite loop when this is called
         if message == "read_camera":
             if not self.get_secure_cookie(COOKIE_NAME):
@@ -84,7 +84,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
 import cv2
 from PIL import Image
-camera = cv2.VideoCapture()
+camera = cv2.VideoCapture(0)
 
 w,h = 1280, 720
 

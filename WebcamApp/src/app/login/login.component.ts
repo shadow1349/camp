@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
 
   Login() {
     this.auth.Login(this.Email.value, this.Password.value).then(x => {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/dashboard/main']);
     });
   }
 }

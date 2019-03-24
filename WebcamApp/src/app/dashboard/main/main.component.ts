@@ -15,13 +15,13 @@ export class MainComponent implements OnInit, OnDestroy {
   @ViewChild('video') Video: ElementRef;
 
   constructor(private auth: AuthService) {
-    this.socket = new WebSocket(`ws://${environment.device}:${environment.port}`);
+    this.socket = new WebSocket(`ws://${environment.device}:${environment.port}/camera`);
     this.socket.onopen = () => {
       this.ReadCamera();
     };
 
     this.socket.onmessage = ev => {
-      this.Video.nativeElement.src = `data:img/jped:base64,${ev.data}`;
+      this.Video.nativeElement.src = `data:image/jpeg;base64,${ev.data}`;
     };
   }
 
@@ -34,7 +34,8 @@ export class MainComponent implements OnInit, OnDestroy {
   private ReadCamera() {
     this.Subscription.add(
       this.auth.GetIDToken().subscribe(x => {
-        this.socket.send(`read_${x}`);
+        console.log(x);
+        this.socket.send(JSON.stringify({ read: true, token: x }));
       })
     );
   }

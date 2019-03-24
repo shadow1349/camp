@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from 'src/app/services';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: '/dashboard/main', pathMatch: 'full' },
   {
     path: 'dashboard',
     loadChildren: './dashboard/dashboard.module#DashboardModule',
