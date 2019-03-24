@@ -1,20 +1,22 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { environment } from 'src/environments/environment.prod';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/services';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
   socket: WebSocket;
+  private Subscription = new Subscription();
 
   @ViewChild('video') Video: ElementRef;
 
-  constructor() {
-    this.socket = new WebSocket(`ws://${window.location.hostname}:${environment.port}`);
+  constructor(private auth: AuthService) {
+    this.socket = new WebSocket(`ws://${environment.device}:${environment.port}`);
     this.socket.onopen = () => {
-      console.log('CONNECTED');
       this.ReadCamera();
     };
 
@@ -25,7 +27,15 @@ export class MainComponent implements OnInit {
 
   ngOnInit() {}
 
+  ngOnDestroy() {
+    this.Subscription.unsubscribe();
+  }
+
   private ReadCamera() {
-    this.socket.send('read_camera');
+    this.Subscription.add(
+      this.auth.GetIDToken().subscribe(x => {
+        this.socket.send(`read_${x}`);
+      })
+    );
   }
 }

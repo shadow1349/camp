@@ -29,10 +29,10 @@ COOKIE_NAME = "camp"
 class IndexHandler(tornado.web.RequestHandler):
 
     def get(self):
-        if args.require_login and not self.get_secure_cookie(COOKIE_NAME):
+        if not self.get_secure_cookie(COOKIE_NAME):
             self.redirect("/login")
         else:
-            self.render("index.html", port=args.port)
+            self.render("index.html", port=8000)
 
 class LoginHandler(tornado.web.RequestHandler):
 
@@ -73,13 +73,10 @@ class WebSocket(tornado.websocket.WebSocketHandler):
         """Sends camera images in an infinite loop."""
         sio = io.StringIO()
 
-        if args.use_usb:
-            _, frame = camera.read()
-            img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-            img.save(sio, "JPEG")
-        else:
-            camera.capture(sio, "jpeg", use_video_port=True)
-
+        _, frame = camera.read()
+        img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        img.save(sio, "JPEG")
+    
         try:
             self.write_message(base64.b64encode(sio.getvalue()))
         except tornado.websocket.WebSocketClosedError:
@@ -87,7 +84,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
 import cv2
 from PIL import Image
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture()
 
 w,h = 1280, 720
 
@@ -101,6 +98,6 @@ handlers = [(r"/", IndexHandler), (r"/login", LoginHandler),
 application = tornado.web.Application(handlers, cookie_secret=PASSWORD)
 application.listen(8000)
 
-webbrowser.open("http://localhost:%d/" % args.port, new=2)
+webbrowser.open("http://localhost:%d/" % 8000, new=2)
 
 tornado.ioloop.IOLoop.instance().start()

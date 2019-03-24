@@ -8,5 +8,6 @@ export const environment = {
     storageBucket: 'my-webcam-app.appspot.com',
     messagingSenderId: '132915908744'
   },
-  port: 8000
+  port: 8000,
+  device: '12.86.88.126'
 };
