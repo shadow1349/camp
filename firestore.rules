@@ -4,6 +4,12 @@ service cloud.firestore {
     	allow create, list, update: if IsAdmin();
       allow read, delete: if IsOwner(UserId) || IsAdmin();
     }
+
+    match /Cameras/{CameraId} {
+      //This should only be handled by the admin library
+      allow create, delete: if false;
+      allow read, list: if IsAuthorized() || IsAdmin();
+    }
     
     function IsOwner(id) {
     	return request.auth.uid == id;
@@ -11,6 +17,10 @@ service cloud.firestore {
     
     function IsAdmin() {
     	return request.auth.token['admin'] == true;
+    }
+
+    function IsAuthorized() {
+      return request.auth.token['authorized'] == true;
     }
   }
 }

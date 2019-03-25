@@ -15,7 +15,7 @@ export class MainComponent implements OnInit, OnDestroy {
   @ViewChild('video') Video: ElementRef;
 
   constructor(private auth: AuthService) {
-    this.socket = new WebSocket(`ws://192.168.86.85:${environment.port}/camera`);
+    this.socket = new WebSocket(`ws://192.168.86.85:8000/camera`);
     this.socket.onopen = () => {
       this.ReadCamera();
     };
