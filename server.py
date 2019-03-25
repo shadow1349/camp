@@ -9,7 +9,7 @@ from firebase_admin import auth
 import base64
 import os
 import json
-from gpiozero import PWMOutputDevice
+# from gpiozero import PWMOutputDevice, Device
 
 root = os.path.normpath(os.path.dirname(__file__))
 path = os.path.join(root, 'key.json')
@@ -27,12 +27,14 @@ w, h = 1280, 720
 camera.set(3, w)
 camera.set(4, h)
 
-pin = 23
+# pin = 23
 
-servo = PWMOutputDevice(pin)
-servo.on()
+# servo = PWMOutputDevice(pin)
+# servo.on()
 
-servo_position = 0
+# d = Device(pin)
+
+# servo_position = 0
 
 
 def require_firebase_auth(handler_class):
@@ -94,21 +96,23 @@ class WebSocket(tornado.websocket.WebSocketHandler):
         except tornado.websocket.WebSocketClosedError:
             self.camera_loop.stop()
 
-@require_firebase_auth
-class MoveLeftHandler(tornado.web.RequestHandler):
-    def post(self, **kwargs):
-        servo_position++
-        servo.value = servo_position
+# @require_firebase_auth
+# class MoveLeftHandler(tornado.web.RequestHandler):
+#     def post(self, **kwargs):
+#         servo_position++
+#         servo.value = servo_position
 
-@require_firebase_auth
-class MoveRightHandler(tornado.web.RequestHandler):
-    def post(self, **kwargs):
-        servo_position--
-        servo.value = servo_position
+# @require_firebase_auth
+# class MoveRightHandler(tornado.web.RequestHandler):
+#     def post(self, **kwargs):
+#         servo_position--
+#         servo.value = servo_position
 
 
-handlers = [(r"/camera", WebSocket), (r"/right", MoveRightHandler),
-            (r"/left", MoveLeftHandler)]
+# handlers = [(r"/camera", WebSocket), (r"/right", MoveRightHandler),
+#             (r"/left", MoveLeftHandler)]
+
+handlers = [(r"/camera", WebSocket)]
 
 application = tornado.web.Application(handlers)
 application.listen(8000)

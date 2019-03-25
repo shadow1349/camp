@@ -36,4 +36,8 @@ export class AuthService {
       alert('Error Signing In');
     });
   }
+
+  Logout() {
+    return this.auth.auth.signOut();
+  }
 }
