@@ -9,6 +9,7 @@ from firebase_admin import auth
 import base64
 import os
 import json
+import io
 # from gpiozero import PWMOutputDevice, Device
 
 root = os.path.normpath(os.path.dirname(__file__))
@@ -16,10 +17,7 @@ path = os.path.join(root, 'key.json')
 cred = credentials.Certificate(path)
 admin.initialize_app(cred)
 
-try:
-    import cStringIO as io
-except ImportError:
-    import io
+
 
 # SETUP CAMERA
 camera = cv2.VideoCapture(0)

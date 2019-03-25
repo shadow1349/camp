@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 
-import { MatCardModule, MatToolbarModule } from '@angular/material';
+import { MatCardModule, MatToolbarModule, MatButtonModule } from '@angular/material';
 import { CovalentLayoutModule } from '@covalent/core';
 
 @NgModule({
@@ -14,7 +14,8 @@ import { CovalentLayoutModule } from '@covalent/core';
     DashboardRoutingModule,
     CovalentLayoutModule,
     MatCardModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatButtonModule
   ]
 })
 export class DashboardModule {}
